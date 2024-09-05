@@ -1,4 +1,4 @@
-# **Task Management**
+# **Furniflex**
 
 [**task-management-server-link**
 ](https://tm-tool.onrender.com/)
@@ -8,4 +8,3 @@
 - Nodejs
 - Expressjs
 - MongoDB
-- Json Web token

@@ -43,49 +43,49 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const taskManagement = client.db("task-management");
-    const userCollection = taskManagement.collection("users");
-    const tasksCollection = taskManagement.collection("tasks");
+    const productManagement = client.db("product-management");
+    const userCollection = productManagement.collection("users");
+    const productsCollection = productManagement.collection("products");
 
-    // task
-    app.post("/tasks/create-task", async (req, res) => {
-      const tasksData = req.body;
-      const result = await tasksCollection.insertOne(tasksData);
+    // product
+    app.post("/products/create-product", async (req, res) => {
+      const productsData = req.body;
+      const result = await productsCollection.insertOne(productsData);
       res.send(result);
     });
 
-    app.get("/tasks", async (req, res) => {
+    app.get("/products", async (req, res) => {
       const filter = req.query;
       let query = {};
 
       try {
-        const tasksData = tasksCollection.find(query);
-        const result = await tasksData.toArray();
+        const productsData = productsCollection.find(query);
+        const result = await productsData.toArray();
         res.status(200).json(result);
       } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "An error occurred while fetching tasks." });
+        res.status(500).json({ error: "An error occurred while fetching products." });
       }
     });
 
-    app.get("/tasks/:id", async (req, res) => {
+    app.get("/products/:id", async (req, res) => {
       const id = req.params.id;
-      const tasksData = await tasksCollection.findOne({
+      const productsData = await productsCollection.findOne({
         _id: new ObjectId(id),
       });
-      res.send(tasksData);
+      res.send(productsData);
     });
 
-    app.patch("/tasks/:id", verifyToken, async (req, res) => {
+    app.patch("/products/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
       const updatedData = req.body;
-      const result = await tasksCollection.updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
+      const result = await productsCollection.updateOne({ _id: new ObjectId(id) }, { $set: updatedData });
       res.send(result);
     });
 
-    app.delete("/tasks/:id", verifyToken, async (req, res) => {
+    app.delete("/products/:id", verifyToken, async (req, res) => {
       const id = req.params.id;
-      const result = await tasksCollection.deleteOne({ _id: new ObjectId(id) });
+      const result = await productsCollection.deleteOne({ _id: new ObjectId(id) });
       res.send(result);
     });
 
