@@ -43,9 +43,10 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     await client.connect();
-    const productManagement = client.db("product-management");
-    const userCollection = productManagement.collection("users");
-    const productsCollection = productManagement.collection("products");
+    const db = client.db("furniflex");
+    const userCollection = db.collection("users");
+    const productsCollection = db.collection("products");
+    const cartsCollection = db.collection("carts");
 
     // product
     app.post("/products/create-product", async (req, res) => {
@@ -94,7 +95,9 @@ async function run() {
       const user = req.body;
 
       const token = createToken(user);
+
       const isUserExist = await userCollection.findOne({ email: user?.email });
+
       if (isUserExist?._id) {
         return res.send({
           statu: "success",
@@ -102,6 +105,7 @@ async function run() {
           token,
         });
       }
+
       await userCollection.insertOne(user);
       return res.send({ token });
     });
@@ -128,6 +132,33 @@ async function run() {
       const email = req.params.email;
       const userData = req.body;
       const result = await userCollection.updateOne({ email }, { $set: userData }, { upsert: true });
+      res.send(result);
+    });
+
+    app.post("/carts/create-cart", async (req, res) => {
+      const cartData = req.body;
+      const result = await cartsCollection.insertOne(cartData);
+      res.send(result);
+    });
+
+    app.get("/carts", async (req, res) => {
+      // const filter = req.query;
+      const email = req.query.email;
+      const query = { email: email };
+
+      try {
+        const cartData = cartsCollection.find(query);
+        const result = await cartData.toArray();
+        res.status(200).json(result);
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "An error occurred while fetching cart." });
+      }
+    });
+
+    app.delete("/carts/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await cartsCollection.deleteOne({ _id: new ObjectId(id) });
       res.send(result);
     });
 
