@@ -1,7 +1,7 @@
 # **Furniflex**
 
-[**task-management-server-link**
-](https://tm-tool.onrender.com/)
+[**Furniflex-server-link**
+](https://furniflex-server.onrender.com)
 
 ## **Use Technogoly**
 
